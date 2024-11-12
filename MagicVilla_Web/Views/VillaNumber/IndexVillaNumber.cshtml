@@ -1,0 +1,39 @@
+﻿@model IEnumerable<VillaNumberDTO>
+<br />
+<div class="container p-4 border">
+    <div class="row pb-2">
+        <div class="col">
+            <h1 class="text-primary">Villa Number List</h1>
+        </div>
+        <div class="col text-end pt-1">
+            <a asp-action="CreateVillaNumber" class="btn btn-outline-primary"><i class="bi bi-plus-square-fill"> Create New Villa Number</i></a>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Title Name
+                </th>
+                <th>Villa Number</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var villa in Model)
+            {
+                <tr>
+                    <th>
+                        @villa.Villa.Name
+                    </th>
+                    <th>@villa.VillaNo</th>
+                    <th>
+                        <a asp-action="UpdateVillaNumber" asp-route-villaNo="@villa.VillaNo" class="btn btn-success"><i class="bi bi-pencil-square"></i></a>
+                        <a asp-action="DeleteVillaNumber" asp-route-villaNo="@villa.VillaNo" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
+                    </th>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+</div>

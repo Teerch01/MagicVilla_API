@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Text.Json;
 
 namespace MagicVilla_VillaAPI.Controllers.V1;
 
@@ -19,12 +20,35 @@ public class VillaAPIController(IUnitOfWork unit, IMapper mapper) : ControllerBa
 
     [ProducesResponseType(StatusCodes.Status200OK)]
     [HttpGet]
-    public async Task<ActionResult<APIResponse>> GetVillas()
+    [ResponseCache(CacheProfileName = "Default30")]
+    public async Task<ActionResult<APIResponse>> GetVillas([FromQuery] int? occupancy, [FromQuery] string? search,
+        int pageSize = 0, int pageNumber = 1)
     {
         try
         {
+            IEnumerable<Villa> Villas;
+            if (occupancy > 0)
+            {
+                Villas = await unit.VillaRepository.GetAllAsync(u => u.Occupancy == occupancy, pageSize: pageSize, pageNumber: pageNumber);
+            }
+            else
+            {
+                Villas = await unit.VillaRepository.GetAllAsync(pageSize: pageSize, pageNumber: pageNumber);
+            }
+            if (!string.IsNullOrEmpty(search))
+            {
+                Villas = Villas.Where(u => u.Name.Contains(search, StringComparison.CurrentCultureIgnoreCase));
+            }
             //logger.Log("Getting all villas", "error");
-            var Villas = await unit.VillaRepository.GetAllAsync();
+
+            Pagination pagination = new()
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+            };
+
+            Response.Headers.Add("X-pagination", JsonSerializer.Serialize(pagination));
+
             response.Result = mapper.Map<IEnumerable<VillaDTO>>(Villas);
             response.StatusCode = HttpStatusCode.OK;
 
@@ -44,6 +68,8 @@ public class VillaAPIController(IUnitOfWork unit, IMapper mapper) : ControllerBa
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpGet("{id:int}", Name = "GetVilla")]
+    [ResponseCache(Duration = 30)]
+    //[ResponseCache(ResponseCacheLocation.None, NoStore = true)] for error pages etc
     public async Task<ActionResult<APIResponse>> GetVilla(int id)
     {
         try
@@ -136,6 +162,7 @@ public class VillaAPIController(IUnitOfWork unit, IMapper mapper) : ControllerBa
             if (villa == null)
             {
                 response.StatusCode = HttpStatusCode.NotFound;
+                response.IsSuccess = false;
                 return NotFound(response);
             }
 
@@ -173,6 +200,7 @@ public class VillaAPIController(IUnitOfWork unit, IMapper mapper) : ControllerBa
             if (villa == null)
             {
                 response.StatusCode = HttpStatusCode.NotFound;
+                response.IsSuccess = false;
                 return NotFound(response);
             }
 

@@ -14,7 +14,7 @@ public class AuthService(IHttpClientFactory clientFactory, IConfiguration config
         {
             ApiType = SD.ApiType.POST,
             Data = loginRequestDTO,
-            Url = $"{villaUrl}/api/UsersAuth/login"
+            Url = $"{villaUrl}/UsersAuth/login"
         });
     }
 
@@ -24,7 +24,7 @@ public class AuthService(IHttpClientFactory clientFactory, IConfiguration config
         {
             ApiType = SD.ApiType.POST,
             Data = registrationRequestDTO,
-            Url = $"{villaUrl}/api/UsersAuth/register"
+            Url = $"{villaUrl}/UsersAuth/register"
         });
     }
 }

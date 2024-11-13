@@ -7,7 +7,7 @@ namespace MagicVilla_Web.Services;
 
 public class VillaNumberService(IHttpClientFactory clientFactory, IConfiguration configuration) : BaseService(clientFactory), IVillaNumberService
 {
-    private string? villaUrl = configuration.GetValue<string>("ServiceUrls:VillaAPI");
+    private readonly string? villaUrl = configuration.GetValue<string>("ServiceUrls:VillaAPI");
 
     public Task<T> CreateAsync<T>(VillaNumberCreateDTO dto, string token)
     {
@@ -15,7 +15,7 @@ public class VillaNumberService(IHttpClientFactory clientFactory, IConfiguration
         {
             ApiType = SD.ApiType.POST,
             Data = dto,
-            Url = $"{villaUrl}/api/villaNumberAPI",
+            Url = $"{villaUrl}/villaNumberAPI",
             Token = token
         });
     }
@@ -25,7 +25,7 @@ public class VillaNumberService(IHttpClientFactory clientFactory, IConfiguration
         return SendAsync<T>(new APIRequest()
         {
             ApiType = SD.ApiType.DELETE,
-            Url = $"{villaUrl}/api/villaNumberAPI/{id}",
+            Url = $"{villaUrl}/villaNumberAPI/{id}",
             Token = token
         });
     }
@@ -35,7 +35,7 @@ public class VillaNumberService(IHttpClientFactory clientFactory, IConfiguration
         return SendAsync<T>(new APIRequest()
         {
             ApiType = SD.ApiType.GET,
-            Url = $"{villaUrl}/api/villaNumberAPI",
+            Url = $"{villaUrl}/villaNumberAPI",
             Token = token
         });
     }
@@ -45,7 +45,7 @@ public class VillaNumberService(IHttpClientFactory clientFactory, IConfiguration
         return SendAsync<T>(new APIRequest()
         {
             ApiType = SD.ApiType.GET,
-            Url = $"{villaUrl}/api/villaNumberAPI/{id}",
+            Url = $"{villaUrl}/villaNumberAPI/{id}",
             Token = token
         });
     }
@@ -56,7 +56,7 @@ public class VillaNumberService(IHttpClientFactory clientFactory, IConfiguration
         {
             ApiType = SD.ApiType.PUT,
             Data = dto,
-            Url = $"{villaUrl}/api/villaNumberAPI/{dto.VillaNo}",
+            Url = $"{villaUrl}/villaNumberAPI/{dto.VillaNo}",
             Token = token
         });
     }

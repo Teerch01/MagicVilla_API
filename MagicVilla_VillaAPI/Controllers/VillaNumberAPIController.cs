@@ -2,6 +2,7 @@
 using MagicVilla_VillaAPI.Models;
 using MagicVilla_VillaAPI.Models.Dto;
 using MagicVilla_VillaAPI.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -30,7 +31,7 @@ public class VillaNumberAPIController(IUnitOfWork unit, IMapper mapper) : Contro
         catch (Exception ex)
         {
             response.IsSuccess = false;
-            response.ErrorMessage = [ex.ToString()];
+            response.ErrorMessages = [ex.ToString()];
         }
         return response;
     }
@@ -65,12 +66,13 @@ public class VillaNumberAPIController(IUnitOfWork unit, IMapper mapper) : Contro
         catch (Exception ex)
         {
             response.IsSuccess = false;
-            response.ErrorMessage = [ex.ToString()];
+            response.ErrorMessages = [ex.ToString()];
         }
         return response;
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -110,12 +112,13 @@ public class VillaNumberAPIController(IUnitOfWork unit, IMapper mapper) : Contro
         catch (Exception ex)
         {
             response.IsSuccess = false;
-            response.ErrorMessage = [ex.ToString()];
+            response.ErrorMessages = [ex.ToString()];
         }
         return response;
 
     }
 
+    [Authorize(Roles = "admin")]
     [HttpDelete("{id:int}", Name = "DeleteVillaNumber")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -148,11 +151,12 @@ public class VillaNumberAPIController(IUnitOfWork unit, IMapper mapper) : Contro
         catch (Exception ex)
         {
             response.IsSuccess = false;
-            response.ErrorMessage = [ex.ToString()];
+            response.ErrorMessages = [ex.ToString()];
         }
         return response;
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPut("{id:int}", Name = "UpdateVillaNumber")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -193,7 +197,7 @@ public class VillaNumberAPIController(IUnitOfWork unit, IMapper mapper) : Contro
         catch (Exception ex)
         {
             response.IsSuccess = false;
-            response.ErrorMessage = [ex.ToString()];
+            response.ErrorMessages = [ex.ToString()];
         }
         return response;
     }

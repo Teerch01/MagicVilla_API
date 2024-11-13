@@ -3,6 +3,7 @@ using MagicVilla_Web.Models;
 using MagicVilla_Web.Services.IServices;
 using Newtonsoft.Json;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace MagicVilla_Web.Services;
@@ -11,13 +12,13 @@ public class BaseService(IHttpClientFactory httpClient) : IBaseService
 {
     public APIResponse responseModel { get; set; } = new();
 
-    public IHttpClientFactory httpClient { get; set; } = httpClient;
+    public IHttpClientFactory HttpClient { get; set; } = httpClient;
 
     public async Task<T> SendAsync<T>(APIRequest apiRequest)
     {
         try
         {
-            var client = httpClient.CreateClient("MagicAPI");
+            var client = HttpClient.CreateClient("MagicAPI");
             HttpRequestMessage message = new();
             message.Headers.Add("Accept", "application/json");
             message.RequestUri = new(apiRequest.Url);
@@ -35,6 +36,11 @@ public class BaseService(IHttpClientFactory httpClient) : IBaseService
             };
 
             HttpResponseMessage apiResponse;
+
+            if (!string.IsNullOrEmpty(apiRequest.Token))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiRequest.Token);
+            }
 
             apiResponse = await client.SendAsync(message);
 
